@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Guestbook - 90s Space Theme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&display=swap');
+        
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: #000;
+            color: #0ff;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 90% 30%, rgba(0, 255, 255, 0.2) 0%, transparent 25%),
+                radial-gradient(circle at 50% 80%, rgba(255, 0, 255, 0.2) 0%, transparent 30%);
+            animation: stars 20s linear infinite;
+        }
+        
+        @keyframes stars {
+            0% { background-position: 0 0, 0 0, 0 0; }
+            100% { background-position: -500px 0, 500px 500px, 0 -500px; }
+        }
+        
+        .crt-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(rgba(18, 16, 16, 0.1) 50%, rgba(0, 0, 0, 0.7) 50%),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.03));
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                rgba(0, 255, 255, 0.05) 0%, 
+                rgba(0, 255, 255, 0) 10%);
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
+            z-index: 101;
+        }
+        
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        
+        .glow {
+            text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 15px #0ff;
+        }
+        
+        .pixel-border {
+            border-image: 
+                linear-gradient(45deg, #0ff, #f0f) 1;
+            border-width: 3px;
+            border-style: solid;
+        }
+        
+        .message-card {
+            background: rgba(0, 0, 20, 0.7);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        
+        .message-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px #0ff;
+        }
+        
+        .btn-space {
+            background: linear-gradient(45deg, #0ff, #f0f);
+            color: black;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-space:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px #0ff;
+        }
+        
+        input, textarea {
+            background: rgba(0, 20, 30, 0.7) !important;
+            border: 1px solid #0ff !important;
+            color: #0ff !important;
+        }
+        
+        input:focus, textarea:focus {
+            box-shadow: 0 0 10px #0ff !important;
+            border-color: #f0f !important;
+        }
+        
+        ::placeholder {
+            color: rgba(0, 255, 255, 0.5) !important;
+        }
+        
+        .alien {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        
+        .btn-home {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 99;
+            background: linear-gradient(45deg, #f0f, #0ff);
+            color: black;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 9999px;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-home:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.9);
+        }
+    </style>
+</head>
+<body>
+    <div class="crt-effect"></div>
+    <div class="scanline"></div>
+    
+    <!-- Back to Home Button -->
+    <a href="index.html" class="btn-home">
+        <i class="fas fa-home mr-2"></i> BACK TO HOME
+    </a>
+    
+    <div class="container mx-auto px-4 py-8 max-w-4xl relative">
+        <!-- Header -->
+        <header class="text-center mb-10 relative">
+            <div class="flex justify-center mb-4">
+                <div class="alien">
+                    <i class="fas fa-user-astronaut text-6xl text-fuchsia-400"></i>
+                </div>
+            </div>
+            <h1 class="text-5xl font-bold mb-2 glow">
+                COSMIC GUESTBOOK
+            </h1>
+            <p class="text-xl text-cyan-300 mb-6">
+                Leave your mark in the digital cosmos!
+            </p>
+            <div class="flex justify-center space-x-4">
+                <div class="w-16 h-1 bg-cyan-400"></div>
+                <div class="w-16 h-1 bg-fuchsia-400"></div>
+                <div class="w-16 h-1 bg-cyan-400"></div>
+            </div>
+        </header>
+        
+        <!-- Guestbook Form -->
+        <section class="mb-16 pixel-border p-6 bg-black bg-opacity-70">
+            <h2 class="text-2xl font-bold mb-6 text-center glow">SIGN THE GUESTBOOK</h2>
+            <form id="guestbook-form" class="space-y-4">
+                <div>
+                    <label for="name" class="block mb-2 text-cyan-300">Your Name</label>
+                    <input type="text" id="name" name="name" required 
+                        class="w-full px-4 py-2 rounded focus:outline-none" 
+                        placeholder="Commander...">
+                </div>
+                <div>
+                    <label for="email" class="block mb-2 text-cyan-300">Email (optional)</label>
+                    <input type="email" id="email" name="email" 
+                        class="w-full px-4 py-2 rounded focus:outline-none" 
+                        placeholder="your@spacemail.com">
+                </div>
+                <div>
+                    <label for="message" class="block mb-2 text-cyan-300">Your Message</label>
+                    <textarea id="message" name="message" rows="4" required 
+                        class="w-full px-4 py-2 rounded focus:outline-none" 
+                        placeholder="Beam your thoughts into the cosmic void..."></textarea>
+                </div>
+                <div class="flex justify-center">
+                    <button type="submit" class="btn-space px-8 py-3 rounded-full text-lg">
+                        <i class="fas fa-paper-plane mr-2"></i> TRANSMIT MESSAGE
+                    </button>
+                </div>
+            </form>
+        </section>
+        
+        <!-- Guestbook Entries -->
+        <section>
+            <h2 class="text-3xl font-bold mb-8 text-center glow">COSMIC MESSAGES</h2>
+            <div id="messages-container" class="space-y-6">
+                <!-- Messages will be added here by JavaScript -->
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="mt-16 text-center text-sm text-cyan-400 opacity-70">
+            <p class="mb-2 pulse">Made with <i class="fas fa-heart text-fuchsia-400"></i> in the year 199X</p>
+            <p>This guestbook is powered by cosmic energy and 90s nostalgia</p>
+            <div class="mt-4 flex justify-center space-x-4">
+                <a href="#" class="text-cyan-300 hover:text-fuchsia-400"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-cyan-300 hover:text-fuchsia-400"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="text-cyan-300 hover:text-fuchsia-400"><i class="fab fa-instagram"></i></a>
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load existing messages from localStorage
+            loadMessages();
+            
+            // Handle form submission
+            document.getElementById('guestbook-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const message = document.getElementById('message').value.trim();
+                
+                if (name && message) {
+                    const newMessage = {
+                        id: Date.now(),
+                        name: name,
+                        email: email,
+                        message: message,
+                        date: new Date().toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })
+                    };
+                    
+                    // Save to localStorage
+                    saveMessage(newMessage);
+                    
+                    // Add to display
+                    addMessageToDOM(newMessage);
+                    
+                    // Reset form
+                    this.reset();
+                    
+                    // Show confirmation effect
+                    showConfirmation();
+                }
+            });
+            
+            function saveMessage(message) {
+                let messages = JSON.parse(localStorage.getItem('guestbookMessages')) || [];
+                messages.unshift(message); // Add new message at beginning
+                localStorage.setItem('guestbookMessages', JSON.stringify(messages));
+            }
+            
+            function loadMessages() {
+                const messages = JSON.parse(localStorage.getItem('guestbookMessages')) || [];
+                messages.forEach(message => addMessageToDOM(message));
+            }
+            
+            function addMessageToDOM(message) {
+                const container = document.getElementById('messages-container');
+                
+                const messageCard = document.createElement('div');
+                messageCard.className = 'message-card p-6 rounded-lg pixel-border';
+                messageCard.innerHTML = `
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-fuchsia-500 flex items-center justify-center">
+                                <i class="fas fa-user-astronaut text-white"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-baseline">
+                                <h3 class="text-lg font-bold text-cyan-300">${message.name}</h3>
+                                <span class="text-xs text-fuchsia-300">${message.date}</span>
+                            </div>
+                            ${message.email ? `<p class="text-xs text-cyan-400 mb-2">${message.email}</p>` : ''}
+                            <p class="text-cyan-100">${message.message}</p>
+                        </div>
+                    </div>
+                `;
+                
+                container.prepend(messageCard);
+            }
+            
+            function showConfirmation() {
+                const confirmation = document.createElement('div');
+                confirmation.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black bg-opacity-90 border-2 border-cyan-400 p-6 rounded-lg z-50 text-center';
+                confirmation.innerHTML = `
+                    <i class="fas fa-check-circle text-5xl text-cyan-400 mb-4"></i>
+                    <h3 class="text-2xl font-bold text-cyan-300 mb-2">MESSAGE TRANSMITTED!</h3>
+                    <p class="text-cyan-100">Your cosmic message has been beamed into the void.</p>
+                `;
+                
+                document.body.appendChild(confirmation);
+                
+                setTimeout(() => {
+                    confirmation.style.opacity = '0';
+                    setTimeout(() => confirmation.remove(), 500);
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
