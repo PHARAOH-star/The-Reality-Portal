@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Reality Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        :root {
+            --primary: #00ff9d;
+            --secondary: #00b8ff;
+            --dark: #0a0a0a;
+            --darker: #050505;
+            --light: #f0f0f0;
+        }
+        
+        body {
+            font-family: 'Space Mono', monospace;
+            background-color: var(--darker);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+        
+        .hacker-font {
+            font-family: 'Share Tech Mono', monospace;
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 5px var(--primary), 0 0 10px var(--primary);
+        }
+        
+        .glow-box {
+            box-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary);
+        }
+        
+        .portal {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .portal::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0,255,157,0.1) 0%, rgba(0,0,0,0) 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+        
+        .terminal {
+            background-color: rgba(10, 10, 10, 0.8);
+            border: 1px solid var(--primary);
+            border-radius: 0.5rem;
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
+        }
+        
+        .terminal-header {
+            background-color: var(--dark);
+            border-bottom: 1px solid var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+        
+        .terminal-body {
+            padding: 1rem;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .command-line {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .prompt {
+            color: var(--primary);
+            margin-right: 0.5rem;
+        }
+        
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background-color: var(--primary);
+            animation: blink 1s infinite;
+        }
+        
+        .astral-particle {
+            position: absolute;
+            background-color: var(--secondary);
+            border-radius: 50%;
+            opacity: 0.7;
+            z-index: -1;
+        }
+        
+        .nav-link {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            left: 100%;
+        }
+        
+        .holographic-card {
+            background: rgba(10, 10, 10, 0.7);
+            border: 1px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .holographic-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(0, 255, 157, 0.1) 0%,
+                rgba(0, 184, 255, 0.1) 50%,
+                rgba(0, 255, 157, 0.1) 100%
+            );
+            transform: rotate(30deg);
+            z-index: -1;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Background particles -->
+    <div id="particles"></div>
+    
+    <!-- Main container -->
+    <div class="container mx-auto px-4 py-8 portal">
+        <!-- Header -->
+        <header class="flex flex-col items-center mb-12">
+            <div class="flex items-center mb-4">
+                <div class="w-16 h-16 rounded-full border-2 border-primary glow-box flex items-center justify-center mr-4">
+                    <i class="fas fa-atom text-3xl text-primary"></i>
+                </div>
+                <h1 class="text-5xl font-bold hacker-font glow-text text-primary">THE REALITY PORTAL</h1>
+            </div>
+            <p class="text-secondary text-lg mb-6 hacker-font">[ Personal Journaling Interface ]</p>
+            
+            <!-- Navigation -->
+            <nav class="flex flex-wrap justify-center gap-4 md:gap-8 mb-8">
+                <a href="#home" class="nav-link px-4 py-2 text-light hover:text-primary transition-colors duration-300 hacker-font">HOME</a>
+                <a href="#about" class="nav-link px-4 py-2 text-light hover:text-primary transition-colors duration-300 hacker-font">ABOUT ME</a>
+                <a href="#physics" class="nav-link px-4 py-2 text-light hover:text-primary transition-colors duration-300 hacker-font">PHYSICS</a>
+                <a href="#interesting" class="nav-link px-4 py-2 text-light hover:text-primary transition-colors duration-300 hacker-font">INTERESTING STUFF</a>
+                <a href="#contact" class="nav-link px-4 py-2 text-light hover:text-primary transition-colors duration-300 hacker-font">CONTACT ME</a>
+            </nav>
+        </header>
+        
+        <!-- Main content -->
+        <main class="mb-16">
+            <!-- Home Section -->
+            <section id="home" class="mb-20">
+                <div class="terminal mb-8">
+                    <div class="terminal-header flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                        <span class="text-light text-sm ml-2 hacker-font">terminal@reality-portal:~</span>
+                    </div>
+                    <div class="terminal-body" id="terminal-output">
+                        <div class="command-line">
+                            <span class="prompt">user@reality-portal:~$</span>
+                            <span class="text-light">Welcome to The Reality Portal</span>
+                        </div>
+                        <div class="command-line">
+                            <span class="prompt">user@reality-portal:~$</span>
+                            <span class="text-light">Initializing quantum journaling interface...</span>
+                        </div>
+                        <div class="command-line">
+                            <span class="prompt">user@reality-portal:~$</span>
+                            <span class="text-light">System status: <span class="text-primary">ONLINE</span></span>
+                        </div>
+                        <div class="command-line">
+                            <span class="prompt">user@reality-portal:~$</span>
+                            <span class="text-light">Enter <span class="text-primary">'help'</span> for command list</span>
+                        </div>
+                        <div class="command-line">
+                            <span class="prompt">user@reality-portal:~$</span>
+                            <span class="text-light"><span class="cursor"></span></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="holographic-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-primary mb-4 hacker-font">LATEST JOURNAL ENTRY</h3>
+                        <p class="text-light mb-4">Date: <span class="text-secondary">2023-11-15</span></p>
+                        <p class="text-light mb-4">Today I contemplated the nature of consciousness and its relationship to quantum mechanics. If observation affects reality at the quantum level, does that mean our thoughts shape the universe around us?</p>
+                        <button class="bg-primary text-dark px-4 py-2 rounded hover:bg-secondary transition-colors duration-300 hacker-font">READ MORE</button>
+                    </div>
+                    
+                    <div class="holographic-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-primary mb-4 hacker-font">QUICK ACCESS</h3>
+                        <ul class="space-y-3">
+                            <li><a href="#" class="text-light hover:text-secondary flex items-center"><i class="fas fa-chevron-right text-xs text-primary mr-2"></i> New Journal Entry</a></li>
+                            <li><a href="#" class="text-light hover:text-secondary flex items-center"><i class="fas fa-chevron-right text-xs text-primary mr-2"></i> Browse Archive</a></li>
+                            <li><a href="#" class="text-light hover:text-secondary flex items-center"><i class="fas fa-chevron-right text-xs text-primary mr-2"></i> Random Thought Generator</a></li>
+                            <li><a href="#" class="text-light hover:text-secondary flex items-center"><i class="fas fa-chevron-right text-xs text-primary mr-2"></i> Reality Metrics</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- About Me Section -->
+            <section id="about" class="mb-20">
+                <h2 class="text-3xl font-bold text-primary mb-8 hacker-font border-b border-primary pb-2">ABOUT ME</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="holographic-card p-6 rounded-lg lg:col-span-2">
+                        <h3 class="text-xl font-bold text-primary mb-4 hacker-font">WHO AM I?</h3>
+                        <p class="text-light mb-4">I am a seeker of truth, a collector of thoughts, and an explorer of realities. This portal serves as my personal interface to document my journey through consciousness, physics, and the nature of existence.</p>
+                        <p class="text-light mb-4">By day, I navigate the digital realms as a technologist. By night, I ponder the mysteries of the cosmos and the fundamental nature of reality.</p>
+                        <p class="text-light">This journal is my attempt to bridge the gap between the digital and the metaphysical, between science and philosophy, between what is known and what remains mysterious.</p>
+                    </div>
+                    
+                    <div class="holographic-card p-6 rounded-lg flex flex-col items-center justify-center">
+                        <div class="w-32 h-32 rounded-full border-2 border-primary mb-4 overflow-hidden">
+                            <img src="https://via.placeholder.com/128" alt="Profile" class="w-full h-full object-cover">
+                        </div>
+                        <h4 class="text-lg font-bold text-primary mb-2 hacker-font">REALITY EXPLORER</h4>
+                        <p class="text-light text-sm text-center">"We are not human beings having a spiritual experience. We are spiritual beings having a human experience."</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+                    <div class="holographic-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-primary mb-4 hacker-font">INTERESTS</h3>
+                        <ul class="space-y-2">
+                            <li class="flex items-center"><i class="fas fa-star text-xs text-primary mr-2"></i> Quantum Physics</li>
+                            <li class="flex items-center"><i class="fas fa-star text-xs text-primary mr-2"></i> Consciousness Studies</li>
+                            <li class="flex items-center"><i class="fas fa-star text-xs text-primary mr-2"></i> Digital Privacy</li>
+                            <li class="flex items-center"><i class="fas fa-star text-xs text-primary mr-2"></i> Cybernetics</li>
+                            <li class="flex items-center"><i class="fas fa-star text-xs text-primary mr-2"></i> Mysticism</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="holographic-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-primary mb-4 hacker-font">CURRENT PROJECTS</h3>
+                        <ul class="space-y-2">
+                            <li class="flex items-center"><i class="fas fa-code-branch text-xs text-primary mr-2"></i> Quantum Journaling App</li>
+                            <li class="flex items-center"><i class="fas fa-code-branch text-xs text-primary mr-2"></i> Reality Simulation</li>
+                            <li class="flex items-center"><i class="fas fa-code-branch text-xs text-primary mr-2"></i> Consciousness Mapping</li>
+                            <li class="flex items-center"><i class="fas fa-code-branch text-xs text-primary mr-2"></i> Digital Sanctuary</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="holographic-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-primary mb-4 hacker-font">PHILOSOPHY</h3>
+                        <p class="text-light text-sm">I believe that reality is a complex, multi-layered construct that we both observe and participate in creating. The intersection of science and spirituality holds the keys to understanding our true nature.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Physics Section -->
+            <section id="physics" class="mb-20">
+                <h2 class="text-3xl font-bold text-primary mb-8 hacker-font border-b border-primary pb-2">PHYSICS</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="holographic-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-primary mb-4 hacker-font">QUANTUM THOUGHTS</h3>
+                        <p class="text-light mb-4">The quantum realm continues to baffle and inspire. Recent experiments in quantum entanglement suggest that information can be transferred instantaneously across vast distances, challenging our classical notions of space and time.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-secondary text-sm">Last updated: 2023-11-10</span>
+                            <button class="bg-primary text-dark px-3 py-1 rounded text-sm hover:bg-secondary transition-colors duration-300 hacker-font">READ MORE</button>
+                        </div>
+                    </div>
+                    
+                    <div class="holographic-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-primary mb-4 hacker-font">COSMIC MUSINGS</h3>
+                        <p class="text-light mb-4">Dark matter and dark energy compose 95% of the universe, yet we know almost nothing about them. What if these "dark" components are actually the substrate of consciousness itself?</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-secondary text-sm">Last updated: 2023-10-28</span>
+                            <button class="bg-primary text-dark px-3 py-1 rounded text-sm hover:bg-secondary transition-colors duration-300 hacker-font">READ MORE</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <h3 class="text-2xl font-bold text-primary mb-6 hacker-font">RECENT PHYSICS JOURNAL ENTRIES</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="holographic-card p-4 rounded-lg">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="text-lg font-bold text-primary hacker-font">The Holographic Principle</h4>
+                                <span class="text-secondary text-sm">2023-11-05</span>
+                            </div>
+                            <p class="text-light text-sm">Explored the idea that all the information in a volume of space can be represented as encoded on the boundary of that space. This suggests our 3D reality might be a projection from a 2D surface.</p>
+                        </div>
+                        
+                        <div class="holographic-card p-4 rounded-lg">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="text-lg font-bold text-primary hacker-font">Quantum Consciousness</h4>
+                                <span class="text-secondary text-sm">2023-10-22</span>
+                            </div>
+                            <p class="text-light text-sm">Examined theories suggesting that quantum processes in microtubules within brain neurons could explain consciousness. The implications for AI and machine consciousness are profound.</p>
+                        </div>
+                        
+                        <div class="holographic-card p-4 rounded-lg">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="text-lg font-bold text-primary hacker-font">Time as an Emergent Property</h4>
+                                <span class="text-secondary text-sm">2023-10-15</span>
+                            </div>
+                            <p class="text-light text-sm">Considered the possibility that time is not fundamental but emerges from more basic quantum processes. This aligns with some interpretations of quantum gravity theories.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 text-center">
+                        <button class="border border-primary text-primary px-6 py-2 rounded hover:bg-primary hover:text-dark transition-colors duration-300 hacker-font">VIEW ARCHIVE</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Interesting Stuff Section -->
+            <section id="interesting" class="mb-20">
+                <h2 class="text-3xl font-bold text-primary mb-8 hacker-font border-b border-primary pb-2">INTERESTING STUFF</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="holographic-card p-4 rounded-lg">
+                        <div class="h-40 bg-dark mb-4 rounded overflow-hidden">
+                            <img src="https://via.placeholder.com/300x200" alt="Interesting" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-lg font-bold text-primary mb-2 hacker-font">CYBER MYSTICISM</h3>
+                        <p class="text-light text-sm mb-3">Exploring the intersection of ancient spiritual practices and modern technology. Can we create digital mandalas that affect consciousness?</p>
+                        <span class="text-secondary text-xs">Posted: 2023-11-12</span>
+                    </div>
+                    
+                    <div class="holographic-card p-4 rounded-lg">
+                        <div class="h-40 bg-dark mb-4 rounded overflow-hidden">
+                            <img src="https://via.placeholder.com/300x200" alt="Interesting" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-lg font-bold text-primary mb-2 hacker-font">NEURAL HACKING</h3>
+                        <p class="text-light text-sm mb-3">Techniques for reprogramming your subconscious mind using principles from computer science and neuroscience.</p>
+                        <span class="text-secondary text-xs">Posted: 2023-11-05</span>
+                    </div>
+                    
+                    <div class="holographic-card p-4 rounded-lg">
+                        <div class="h-40 bg-dark mb-4 rounded overflow-hidden">
+                            <img src="https://via.placeholder.com/300x200" alt="Interesting" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-lg font-bold text-primary mb-2 hacker-font">DREAM ENGINEERING</h3>
+                        <p class="text-light text-sm mb-3">Methods for inducing lucid dreams and using them as a sandbox for reality testing and consciousness exploration.</p>
+                        <span class="text-secondary text-xs">Posted: 2023-10-29</span>
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <h3 class="text-2xl font-bold text-primary mb-6 hacker-font">RECENT FINDS</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="holographic-card p-4 rounded-lg">
+                            <div class="flex items-start">
+                                <div class="w-16 h-16 bg-dark rounded mr-4 flex-shrink-0 overflow-hidden">
+                                    <img src="https://via.placeholder.com/64" alt="Find" class="w-full h-full object-cover">
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-primary hacker-font">The Simulation Argument</h4>
+                                    <p class="text-light text-sm mb-2">Revisited Nick Bostrom's trilemma: either almost all civilizations at our level of development go extinct, almost none develop the capability to run ancestor simulations, or we're almost certainly living in a simulation.</p>
+                                    <span class="text-secondary text-xs">Added: 2023-10-20</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="holographic-card p-4 rounded-lg">
+                            <div class="flex items-start">
+                                <div class="w-16 h-16 bg-dark rounded mr-4 flex-shrink-0 overflow-hidden">
+                                    <img src="https://via.placeholder.com/64" alt="Find" class="w-full h-full object-cover">
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-primary hacker-font">Quantum Biology</h4>
+                                    <p class="text-light text-sm mb-2">New research suggests quantum effects play a role in photosynthesis, bird migration, and possibly even smell. The boundary between quantum and classical physics in biological systems is fascinating.</p>
+                                    <span class="text-secondary text-xs">Added: 2023-10-15</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="holographic-card p-4 rounded-lg">
+                            <div class="flex items-start">
+                                <div class="w-16 h-16 bg-dark rounded mr-4 flex-shrink-0 overflow-hidden">
+                                    <img src="https://via.placeholder.com/64" alt="Find" class="w-full h-full object-cover">
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-primary hacker-font">Information Physics</h4>
+                                    <p class="text-light text-sm mb-2">The idea that information is more fundamental than matter and energy. The universe might be better understood as a quantum information processor than as a collection of particles.</p>
+                                    <span class="text-secondary text-xs">Added: 2023-10-08</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 text-center">
+                        <button class="border border-primary text-primary px-6 py-2 rounded hover:bg-primary hover:text-dark transition-colors duration-300 hacker-font">MORE INTERESTING STUFF</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Contact Me Section -->
+            <section id="contact" class="mb-12">
+                <h2 class="text-3xl font-bold text-primary mb-8 hacker-font border-b border-primary pb-2">CONTACT ME</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="holographic-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-primary mb-6 hacker-font">SEND A MESSAGE</h3>
+                        
+                        <form>
+                            <div class="mb-4">
+                                <label for="name" class="block text-light text-sm mb-2">YOUR NAME</label>
+                                <input type="text" id="name" class="w-full bg-dark border border-primary rounded px-4 py-2 text-light focus:outline-none focus:ring-2 focus:ring-primary">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="email" class="block text-light text-sm mb-2">YOUR EMAIL</label>
+                                <input type="email" id="email" class="w-full bg-dark border border-primary rounded px-4 py-2 text-light focus:outline-none focus:ring-2 focus:ring-primary">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="subject" class="block text-light text-sm mb-2">SUBJECT</label>
+                                <select id="subject" class="w-full bg-dark border border-primary rounded px-4 py-2 text-light focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <option value="">Select a subject</option>
+                                    <option value="physics">Physics Discussion</option>
+                                    <option value="consciousness">Consciousness Exploration</option>
+                                    <option value="collab">Collaboration Proposal</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="message" class="block text-light text-sm mb-2">MESSAGE</label>
+                                <textarea id="message" rows="5" class="w-full bg-dark border border-primary rounded px-4 py-2 text-light focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                            </div>
+                            
+                            <div class="flex items-center mb-4">
+                                <input type="checkbox" id="encrypt" class="mr-2">
+                                <label for="encrypt" class="text-light text-sm">Encrypt this message</label>
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-primary text-dark py-2 rounded hover:bg-secondary transition-colors duration-300 hacker-font font-bold">TRANSMIT MESSAGE</button>
+                        </form>
+                    </div>
+                    
+                    <div class="holographic-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-primary mb-6 hacker-font">CONNECT</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded-full bg-dark border border-primary flex items-center justify-center mr-4">
+                                    <i class="fas fa-envelope text-primary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-light font-bold">EMAIL</h4>
+                                    <p class="text-secondary text-sm">contact@realityportal.xyz</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded-full bg-dark border border-primary flex items-center justify-center mr-4">
+                                    <i class="fab fa-twitter text-primary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-light font-bold">TWITTER</h4>
+                                    <p class="text-secondary text-sm">@reality_explorer</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded-full bg-dark border border-primary flex items-center justify-center mr-4">
+                                    <i class="fab fa-github text-primary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-light font-bold">GITHUB</h4>
+                                    <p class="text-secondary text-sm">github.com/reality-hacker</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded-full bg-dark border border-primary flex items-center justify-center mr-4">
+                                    <i class="fas fa-lock text-primary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-light font-bold">PGP KEY</h4>
+                                    <p class="text-secondary text-sm">0xABCDEF1234567890</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8">
+                            <h3 class="text-xl font-bold text-primary mb-4 hacker-font">SECURE DROP</h3>
+                            <p class="text-light text-sm mb-4">For highly sensitive communications, use our quantum-encrypted drop box:</p>
+                            <button class="w-full border border-primary text-primary py-2 rounded hover:bg-primary hover:text-dark transition-colors duration-300 hacker-font font-bold">INITIATE SECURE CHANNEL</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="border-t border-primary pt-8 pb-12">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h2 class="text-2xl font-bold text-primary hacker-font glow-text">THE REALITY PORTAL</h2>
+                    <p class="text-light text-sm">A personal interface to the multiverse</p>
+                </div>
+                
+                <div class="flex space-x-6">
+                    <a href="#" class="text-light hover:text-primary transition-colors duration-300"><i class="fab fa-twitter text-xl"></i></a>
+                    <a href="#" class="text-light hover:text-primary transition-colors duration-300"><i class="fab fa-github text-xl"></i></a>
+                    <a href="#" class="text-light hover:text-primary transition-colors duration-300"><i class="fab fa-discord text-xl"></i></a>
+                    <a href="#" class="text-light hover:text-primary transition-colors duration-300"><i class="fab fa-medium text-xl"></i></a>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <p class="text-light text-sm">© 2023 The Reality Portal. All dimensions reserved.</p>
+                <p class="text-secondary text-xs mt-2">This website uses quantum cookies to enhance your experience.</p>
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('astral-particle');
+                
+                // Random size between 1px and 5px
+                const size = Math.random() * 4 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation
+                const duration = Math.random() * 20 + 10;
+                particle.style.animation = `float ${duration}s ease-in-out infinite`;
+                
+                container.appendChild(particle);
+            }
+        }
+        
+        // Terminal animation
+        function terminalAnimation() {
+            const terminal = document.getElementById('terminal-output');
+            const commands = [
+                "help",
+                "journal --new",
+                "reality --status",
+                "quantum --entangle",
+                "consciousness --explore",
+                "exit"
+            ];
+            
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i >= commands.length) {
+                    clearInterval(interval);
+                    return;
+                }
+                
+                const commandLine = document.createElement('div');
+                commandLine.classList.add('command-line');
+                
+                const prompt = document.createElement('span');
+                prompt.classList.add('prompt');
+                prompt.textContent = "user@reality-portal:~$";
+                
+                const command = document.createElement('span');
+                command.classList.add('text-light');
+                command.textContent = " " + commands[i];
+                
+                commandLine.appendChild(prompt);
+                commandLine.appendChild(command);
+                terminal.appendChild(commandLine);
+                
+                // Scroll to bottom
+                terminal.scrollTop = terminal.scrollHeight;
+                
+                i++;
+            }, 1000);
+        }
+        
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            terminalAnimation();
+            
+            // Add floating animation to random elements
+            const elements = document.querySelectorAll('h1, h2, h3, .holographic-card');
+            elements.forEach(el => {
+                if (Math.random() > 0.7) {
+                    el.classList.add('floating');
+                    el.style.animationDuration = `${Math.random() * 5 + 5}s`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whispering Leaves | Poetry Journal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Nature animations */
+        .leaf {
+            position: absolute;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23a7f3d0"><path d="M12 3c-4.97 0-9 3.185-9 7.115 0 2.557 1.522 4.82 3.889 6.115l-.889 3.68 3.942-1.9c.97.245 2.058.385 3.058.385 4.97 0 9-3.186 9-7.115C21 6.186 16.97 3 12 3z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.7;
+            z-index: 0;
+            animation: falling linear infinite;
+        }
+        
+        @keyframes falling {
+            0% {
+                transform: translate(0, -10vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translate(var(--end-x), 100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .raindrop {
+            position: absolute;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, rgba(147, 197, 253, 0.6));
+            animation: rain linear infinite;
+        }
+        
+        @keyframes rain {
+            0% {
+                transform: translateY(-10vh);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh);
+                opacity: 0;
+            }
+        }
+        
+        .dewdrop {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: rgba(219, 234, 254, 0.8);
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: dew 8s infinite ease-in-out;
+        }
+        
+        @keyframes dew {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.3);
+                opacity: 1;
+            }
+        }
+        
+        /* Page styles */
+        .page-bg {
+            background: linear-gradient(to bottom, #f0fdf4, #ecfdf5, #d1fae5);
+        }
+        
+        .poem-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+        
+        .handwriting {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-style: italic;
+        }
+        
+        .nature-btn {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.7);
+        }
+        
+        .nature-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+        }
+        
+        /* Paper texture */
+        .paper-texture {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a7f3d0' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="page-bg min-h-screen text-emerald-900">
+    <!-- Nature Elements -->
+    <div id="leaves-container" class="fixed inset-0 overflow-hidden pointer-events-none z-0"></div>
+    <div id="rain-container" class="fixed inset-0 overflow-hidden pointer-events-none z-0 hidden"></div>
+    <div id="dew-container" class="fixed inset-0 overflow-hidden pointer-events-none z-0"></div>
+    
+    <!-- Header -->
+    <header class="relative z-10 py-8 px-6 md:px-12 text-center">
+        <h1 class="text-4xl md:text-5xl font-serif font-bold mb-2">Whispering Leaves</h1>
+        <p class="text-lg md:text-xl text-emerald-700">A personal poetry journal</p>
+        
+        <!-- Nature Controls -->
+        <div class="flex justify-center space-x-4 mt-6">
+            <button id="wind-btn" class="nature-btn px-4 py-2 rounded-full shadow-sm flex items-center">
+                <i class="fas fa-wind mr-2"></i> Wind
+            </button>
+            <button id="rain-btn" class="nature-btn px-4 py-2 rounded-full shadow-sm flex items-center">
+                <i class="fas fa-cloud-rain mr-2"></i> Rain
+            </button>
+            <button id="dew-btn" class="nature-btn px-4 py-2 rounded-full shadow-sm flex items-center">
+                <i class="fas fa-droplet mr-2"></i> Dewdrops
+            </button>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="relative z-10 pb-20 px-6 md:px-12 max-w-4xl mx-auto">
+        <!-- Featured Poem -->
+        <section class="mb-16">
+            <div class="poem-card rounded-xl p-8 md:p-10 paper-texture mb-8">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-2xl md:text-3xl font-serif font-bold">Morning Dew</h2>
+                    <span class="text-sm text-emerald-600">June 12, 2023</span>
+                </div>
+                <div class="space-y-6 text-lg handriting">
+                    <p>The world awakes in silver light,<br>
+                    A fragile veil of morning bright.<br>
+                    Each blade of grass, a jeweled spear,<br>
+                    Adorned with drops of crystal clear.</p>
+                    
+                    <p>The spider's web, a diamond lace,<br>
+                    Suspended in its airy space.<br>
+                    The rosebud holds a trembling sphere,<br>
+                    A liquid pearl, so perfect, dear.</p>
+                    
+                    <p>Oh fleeting beauty, soon you'll rise,<br>
+                    Ascending to the waiting skies.<br>
+                    But in this moment, pure and true,<br>
+                    The earth is dressed in morning dew.</p>
+                </div>
+                <div class="mt-8 pt-4 border-t border-emerald-100 flex justify-end">
+                    <button class="text-emerald-600 hover:text-emerald-800 flex items-center">
+                        <i class="far fa-heart mr-2"></i> 24
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Poem Collection -->
+        <section>
+            <h2 class="text-2xl font-serif font-bold mb-8 pb-2 border-b border-emerald-100">Recent Poems</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Poem 1 -->
+                <div class="poem-card rounded-xl p-6 hover:shadow-md transition-all">
+                    <h3 class="text-xl font-serif font-bold mb-2">The Willow's Lament</h3>
+                    <p class="text-sm text-emerald-600 mb-4">May 28, 2023</p>
+                    <p class="text-gray-700 mb-4 line-clamp-3">Oh wind, why do you pull so? My tresses weep as you come and go. Each strand you steal, each leaf you take, Leaves my boughs all sore and ache...</p>
+                    <a href="#" class="text-emerald-600 hover:text-emerald-800 text-sm font-medium">Read more →</a>
+                </div>
+                
+                <!-- Poem 2 -->
+                <div class="poem-card rounded-xl p-6 hover:shadow-md transition-all">
+                    <h3 class="text-xl font-serif font-bold mb-2">Autumn's Fire</h3>
+                    <p class="text-sm text-emerald-600 mb-4">October 15, 2022</p>
+                    <p class="text-gray-700 mb-4 line-clamp-3">The maples burn in crimson flame, The oaks in gold proclaim your name. A final dance before the sleep, As winter's breath begins to creep...</p>
+                    <a href="#" class="text-emerald-600 hover:text-emerald-800 text-sm font-medium">Read more →</a>
+                </div>
+                
+                <!-- Poem 3 -->
+                <div class="poem-card rounded-xl p-6 hover:shadow-md transition-all">
+                    <h3 class="text-xl font-serif font-bold mb-2">River's Song</h3>
+                    <p class="text-sm text-emerald-600 mb-4">March 3, 2022</p>
+                    <p class="text-gray-700 mb-4 line-clamp-3">Over stone and through the glen, Never stopping, always when The moon is high or sun does shine, This liquid path remains divine...</p>
+                    <a href="#" class="text-emerald-600 hover:text-emerald-800 text-sm font-medium">Read more →</a>
+                </div>
+                
+                <!-- Poem 4 -->
+                <div class="poem-card rounded-xl p-6 hover:shadow-md transition-all">
+                    <h3 class="text-xl font-serif font-bold mb-2">Snowfall Sonnet</h3>
+                    <p class="text-sm text-emerald-600 mb-4">December 18, 2021</p>
+                    <p class="text-gray-700 mb-4 line-clamp-3">A hush descends on frosted ground, Each flake a whisper without sound. The world is wrapped in linen white, As day gives way to silver night...</p>
+                    <a href="#" class="text-emerald-600 hover:text-emerald-800 text-sm font-medium">Read more →</a>
+                </div>
+            </div>
+            
+            <div class="mt-10 text-center">
+                <button class="nature-btn px-6 py-3 rounded-full shadow-sm font-medium flex items-center mx-auto">
+                    <i class="fas fa-book-open mr-2"></i> View All Poems
+                </button>
+            </div>
+        </section>
+    </main>
+    
+    <!-- About Section -->
+    <section class="relative z-10 py-16 px-6 md:px-12 bg-white bg-opacity-50 mt-20">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/3 mb-8 md:mb-0 flex justify-center">
+                    <div class="w-40 h-40 rounded-full bg-gradient-to-br from-emerald-100 to-emerald-200 shadow-md flex items-center justify-center">
+                        <i class="fas fa-feather-alt text-5xl text-emerald-600"></i>
+                    </div>
+                </div>
+                <div class="md:w-2/3 md:pl-10">
+                    <h2 class="text-2xl font-serif font-bold mb-4">About the Poet</h2>
+                    <p class="text-gray-700 mb-4">Welcome to my quiet corner of verse and nature. I find inspiration in the whispering wind, the patter of rain, and the delicate beauty of dewdrops at dawn.</p>
+                    <p class="text-gray-700">This journal is my collection of moments captured in meter and rhyme, each poem a leaf in the forest of my thoughts.</p>
+                    <div class="mt-6 flex space-x-4">
+                        <a href="#" class="text-emerald-600 hover:text-emerald-800"><i class="fab fa-instagram text-xl"></i></a>
+                        <a href="#" class="text-emerald-600 hover:text-emerald-800"><i class="fab fa-twitter text-xl"></i></a>
+                        <a href="#" class="text-emerald-600 hover:text-emerald-800"><i class="fas fa-envelope text-xl"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="relative z-10 py-8 px-6 md:px-12 text-center text-sm text-emerald-800">
+        <p>© 2023 Whispering Leaves. All poems and content are my own.</p>
+        <p class="mt-1">Created with <i class="fas fa-heart text-red-400"></i> and the beauty of nature.</p>
+    </footer>
+    
+    <script>
+        // Create falling leaves (wind effect)
+        function createLeaves() {
+            const container = document.getElementById('leaves-container');
+            const leafCount = 15;
+            
+            for (let i = 0; i < leafCount; i++) {
+                const leaf = document.createElement('div');
+                leaf.classList.add('leaf');
+                
+                // Random properties
+                const size = Math.random() * 20 + 10;
+                const startX = Math.random() * 100;
+                const endX = (Math.random() * 60) - 30; // -30 to 30
+                const duration = Math.random() * 10 + 10;
+                const delay = Math.random() * 15;
+                
+                leaf.style.width = `${size}px`;
+                leaf.style.height = `${size}px`;
+                leaf.style.left = `${startX}%`;
+                leaf.style.setProperty('--end-x', `${endX}px`);
+                leaf.style.animationDuration = `${duration}s`;
+                leaf.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(leaf);
+            }
+        }
+        
+        // Create rain effect
+        function createRain() {
+            const container = document.getElementById('rain-container');
+            const rainCount = 80;
+            
+            // Clear existing drops
+            container.innerHTML = '';
+            
+            for (let i = 0; i < rainCount; i++) {
+                const drop = document.createElement('div');
+                drop.classList.add('raindrop');
+                
+                // Random properties
+                const left = Math.random() * 100;
+                const height = Math.random() * 20 + 10;
+                const duration = Math.random() * 0.5 + 0.5;
+                const delay = Math.random() * 2;
+                
+                drop.style.left = `${left}%`;
+                drop.style.height = `${height}px`;
+                drop.style.animationDuration = `${duration}s`;
+                drop.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(drop);
+            }
+        }
+        
+        // Create dewdrops
+        function createDewdrops() {
+            const container = document.getElementById('dew-container');
+            const dewCount = 30;
+            
+            for (let i = 0; i < dewCount; i++) {
+                const drop = document.createElement('div');
+                drop.classList.add('dewdrop');
+                
+                // Random properties
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const delay = Math.random() * 5;
+                const duration = Math.random() * 5 + 5;
+                
+                drop.style.left = `${left}%`;
+                drop.style.top = `${top}%`;
+                drop.style.animationDelay = `${delay}s`;
+                drop.style.animationDuration = `${duration}s`;
+                
+                container.appendChild(drop);
+            }
+        }
+        
+        // Toggle nature effects
+        document.addEventListener('DOMContentLoaded', () => {
+            createLeaves();
+            createDewdrops();
+            
+            // Rain toggle
+            const rainBtn = document.getElementById('rain-btn');
+            const rainContainer = document.getElementById('rain-container');
+            let rainActive = false;
+            
+            rainBtn.addEventListener('click', () => {
+                rainActive = !rainActive;
+                
+                if (rainActive) {
+                    rainContainer.classList.remove('hidden');
+                    createRain();
+                    rainBtn.classList.add('bg-blue-100', 'text-blue-800');
+                } else {
+                    rainContainer.classList.add('hidden');
+                    rainBtn.classList.remove('bg-blue-100', 'text-blue-800');
+                }
+            });
+            
+            // Dewdrops toggle
+            const dewBtn = document.getElementById('dew-btn');
+            const dewContainer = document.getElementById('dew-container');
+            let dewActive = true;
+            
+            dewBtn.addEventListener('click', () => {
+                dewActive = !dewActive;
+                
+                if (dewActive) {
+                    dewContainer.classList.remove('hidden');
+                    dewBtn.classList.add('bg-blue-100', 'text-blue-800');
+                } else {
+                    dewContainer.classList.add('hidden');
+                    dewBtn.classList.remove('bg-blue-100', 'text-blue-800');
+                }
+            });
+            
+            // Wind (leaves) toggle
+            const windBtn = document.getElementById('wind-btn');
+            const leavesContainer = document.getElementById('leaves-container');
+            let windActive = true;
+            
+            windBtn.addEventListener('click', () => {
+                windActive = !windActive;
+                
+                if (windActive) {
+                    leavesContainer.classList.remove('hidden');
+                    windBtn.classList.add('bg-green-100', 'text-green-800');
+                } else {
+                    leavesContainer.classList.add('hidden');
+                    windBtn.classList.remove('bg-green-100', 'text-green-800');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

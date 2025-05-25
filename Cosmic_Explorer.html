@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Explorer | My 90s Space Zone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 90s Space Background */
+        body {
+            background-color: #000033;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="white" opacity="0.8"/><circle cx="70" cy="30" r="1.5" fill="white" opacity="0.8"/><circle cx="40" cy="70" r="1" fill="white" opacity="0.8"/><circle cx="80" cy="80" r="2" fill="white" opacity="0.8"/><circle cx="10" cy="50" r="1" fill="white" opacity="0.8"/><circle cx="90" cy="10" r="1.5" fill="white" opacity="0.8"/></svg>');
+            color: #00ffff;
+            font-family: 'Courier New', monospace;
+        }
+        
+        /* CRT Monitor Effect */
+        .crt::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 100% 2px;
+            pointer-events: none;
+            animation: scanline 8s linear infinite;
+        }
+        
+        @keyframes scanline {
+            0% { background-position: 0 -50px; }
+        }
+        
+        /* Glowing Text */
+        .glow {
+            text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+        }
+        
+        /* Animated Stars */
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.2; }
+            100% { opacity: 1; }
+        }
+        
+        /* UFO Animation */
+        .ufo {
+            position: absolute;
+            width: 60px;
+            height: 30px;
+            background: radial-gradient(ellipse at center, #00ff00 0%, #006600 70%);
+            border-radius: 50%;
+            animation: fly 20s linear infinite;
+        }
+        
+        .ufo::before {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 15px;
+            width: 30px;
+            height: 10px;
+            background: #00ff00;
+            border-radius: 50%;
+            filter: blur(5px);
+            animation: beam 4s infinite alternate;
+        }
+        
+        @keyframes fly {
+            0% { transform: translateX(-100px) translateY(50px); }
+            100% { transform: translateX(calc(100vw + 100px)) translateY(150px); }
+        }
+        
+        @keyframes beam {
+            0%, 100% { height: 10px; opacity: 0.5; }
+            50% { height: 100px; opacity: 0.2; }
+        }
+        
+        /* Retro Button */
+        .retro-btn {
+            background: linear-gradient(to bottom, #3333ff, #000066);
+            border: 2px solid #00ffff;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .retro-btn:hover {
+            background: linear-gradient(to bottom, #4444ff, #000077);
+            color: #ffff00;
+            border-color: #ffff00;
+        }
+        
+        .retro-btn:active {
+            transform: translateY(2px);
+        }
+        
+        /* Visitor Counter */
+        .counter {
+            font-family: 'LCD', 'Courier New', monospace;
+            color: #ff00ff;
+            background: black;
+            padding: 5px 10px;
+            border: 2px solid #00ffff;
+        }
+        
+        /* Marquee */
+        .marquee {
+            background: linear-gradient(to right, #000044, #000033);
+            color: #ffff00;
+            border-top: 2px solid #00ffff;
+            border-bottom: 2px solid #00ffff;
+            padding: 5px 0;
+        }
+        
+        /* Pixel Art */
+        .pixel {
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+        
+        /* Blinking Cursor */
+        .cursor {
+            animation: blink 1s step-end infinite;
+        }
+        
+        @keyframes blink {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        /* Matrix Rain */
+        .matrix-char {
+            position: absolute;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            animation: matrix-fall linear infinite;
+        }
+        
+        @keyframes matrix-fall {
+            0% { transform: translateY(-20px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+          const musicBtn = document.getElementById("music-btn");
+  const audio = document.getElementById("midi-audio");
+
+  musicBtn.addEventListener("click", () => {
+    if (audio.paused) {
+      audio.play();
+      musicBtn.innerHTML = '<i class="fas fa-music mr-2"></i> PAUSE MIDI';
+    } else {
+      audio.pause();
+      musicBtn.innerHTML = '<i class="fas fa-music mr-2"></i> PLAY MIDI';
+    }
+  });
+    </style>
+</head>
+<body class="crt">
+    <!-- Animated Stars -->
+    <div id="stars-container"></div>
+    
+    <!-- UFO -->
+    <div class="ufo"></div>
+    
+    <!-- Matrix Rain -->
+    <div id="matrix-container" class="fixed inset-0 overflow-hidden pointer-events-none z-0 opacity-20 hidden"></div>
+    
+    <!-- Marquee -->
+    <div class="marquee">
+        <marquee behavior="scroll" direction="left" scrollamount="5">
+            ★彡 WELCOME TO MY COSMIC ZONE 彡★ ~*~ UNDER CONSTRUCTION ~*~ VISITOR COUNT: <span id="visitor-counter" class="counter">0000001</span> ~*~ LAST UPDATED: <span id="last-updated">JUNE 2003</span> ~*~ BEST VIEWED WITH NETSCAPE NAVIGATOR ~*~
+        </marquee>
+    </div>
+    
+    <div class="container mx-auto px-4 py-8 max-w-4xl relative z-10">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='100' viewBox='0 0 200 100'><text x='100' y='60' font-family='Courier New' font-size='40' fill='%2300ffff' text-anchor='middle'><tspan fill='%23ff00ff'>*</tspan> COSMIC LINKS <tspan fill='%23ff00ff'>*</tspan></text></svg>" alt="Cosmic Links" class="mx-auto mb-4">
+            
+            <div class="flex justify-center space-x-4 mb-6">
+                <a href="Cosmic_Explorer.html" class="retro-btn">
+                    <i class="fas fa-home mr-2"></i> HOME
+                </a>
+                <a href="#" class="retro-btn">
+                    <i class="fas fa-user-astronaut mr-2"></i> ABOUT
+                </a>
+                <a href="link.html" class="retro-btn bg-blue-900">
+                    <i class="fas fa-link mr-2"></i> LINKS
+                </a>
+                <a href="#" class="retro-btn">
+                    <i class="fas fa-book mr-2"></i> GUESTBOOK
+                </a>
+            </div>
+            
+            <div class="flex justify-center space-x-4 mb-8">
+                <button id="matrix-btn" class="retro-btn">
+                    <i class="fas fa-terminal mr-2"></i> MATRIX MODE
+                </button>
+                <button id="music-btn" class="retro-btn">
+                    <i class="fas fa-music mr-2"></i> PLAY MIDI
+                </button>
+                <audio id="midi-audio" src="One Last Sunset 3 Body Problem Official Soundtrack Netflix.mp3"></audio>
+            </div>
+        </header>
+        
+        <!-- Content Sections -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Left Column -->
+            <div class="md:col-span-2">
+                <!-- Welcome Section -->
+                <div class="border-2 border-cyan-500 p-4 mb-6 bg-black bg-opacity-70">
+                    <h2 class="text-xl font-bold mb-4 glow">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><polygon points='10,2 4,20 16,20' fill='%2300ffff'/></svg>" alt="*" class="inline mr-2">
+                        WELCOME SPACE TRAVELER!
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><polygon points='10,2 4,20 16,20' fill='%2300ffff'/></svg>" alt="*" class="inline ml-2">
+                    </h2>
+                    <p class="mb-4">Greetings from the far reaches of cyberspace! You've discovered my personal cosmic zone.I am Abhinand Shajan, a student of IIT Roorkee and this is where I share my thoughts, interests, and space adventures.</p>
+                    <p class="mb-4">Feel free to explore the site and sign my guestbook before you blast off to another corner of the web!</p>
+                    <div class="text-center">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='50' viewBox='0 0 150 50'><text x='75' y='30' font-family='Courier New' font-size='20' fill='%23ff00ff' text-anchor='middle'>ENTER AT OWN RISK</text></svg>" alt="Enter at own risk" class="mx-auto">
+                    </div>
+                </div>
+                
+                <!-- Blog Section -->
+                <div class="border-2 border-cyan-500 p-4 mb-6 bg-black bg-opacity-70">
+                    <h2 class="text-xl font-bold mb-4 glow">
+                        <i class="fas fa-rss-square mr-2 text-yellow-300"></i> LATEST SPACE LOGS
+                    </h2>
+                    
+                    <div class="mb-4 p-3 border-l-4 border-purple-500 bg-black bg-opacity-50">
+                        <h3 class="font-bold text-yellow-300">[06.15.97] Discovered new asteroid!</h3>
+                        <p class="text-sm mb-2">Today while scanning the skies with my homemade telescope, I spotted a previously uncharted asteroid! I've named it "Cyberia-97". NASA hasn't responded to my emails yet...</p>
+                        <a href="#" class="text-cyan-300 hover:text-yellow-300 text-xs">READ MORE <span class="cursor">_</span></a>
+                    </div>
+                    
+                    <div class="mb-4 p-3 border-l-4 border-purple-500 bg-black bg-opacity-50">
+                        <h3 class="font-bold text-yellow-300">[05.22.97] Built a rocket in my backyard</h3>
+                        <p class="text-sm mb-2">Using old soda bottles, duct tape, and some fireworks I found, I've constructed a prototype spacecraft. Mom says I can't launch it until I clean my room...</p>
+                        <a href="#" class="text-cyan-300 hover:text-yellow-300 text-xs">READ MORE <span class="cursor">_</span></a>
+                    </div>
+                    
+                    <div class="p-3 border-l-4 border-purple-500 bg-black bg-opacity-50">
+                        <h3 class="font-bold text-yellow-300">[04.01.97] Alien contact!</h3>
+                        <p class="text-sm mb-2">Last night my modem picked up strange signals. After decoding them, I'm convinced it's an extraterrestrial message! They seem to be asking about our "AOL free trial CDs"...</p>
+                        <a href="#" class="text-cyan-300 hover:text-yellow-300 text-xs">READ MORE <span class="cursor">_</span></a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column -->
+            <div>
+                <!-- About Me -->
+                <div class="border-2 border-cyan-500 p-4 mb-6 bg-black bg-opacity-70">
+                    <h2 class="text-xl font-bold mb-4 glow">
+                        <i class="fas fa-user-astronaut mr-2 text-yellow-300"></i> SPACE COMMANDER PROFILE
+                    </h2>
+                   <div class="text-center mb-4">
+                    <img src="abhy.jpeg" alt="Astronaut" class="mx-auto pixel" style="width: 100px; height: 100px;">
+                   </div>
+
+                    <p class="mb-2"><span class="text-yellow-300">NAME:</span>Abhinand Shajan</p>
+                    <p class="mb-2"><span class="text-yellow-300">LOCATION:</span> Universe, virgo supercluster, Milky way, Solar System, Earth, Asia, India, Kerala, Idukki (for now)</p>
+                    <p class="mb-2"><span class="text-yellow-300">INTERESTS:</span> Space, Sci-Fi, Tech</p>
+                    <p class="mb-2"><span class="text-yellow-300">STATUS:</span> Exploring the cosmos</p>
+                    <p class="mb-4"><span class="text-yellow-300">WEBRINGS:</span> 5</p>
+                    <div class="text-center">
+                        <a href="#" class="retro-btn inline-block">
+                            <i class="fas fa-envelope mr-2"></i> CONTACT ME
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Space Countdown -->
+                <div class="border-2 border-cyan-500 p-4 mb-6 bg-black bg-opacity-70">
+                    <h2 class="text-xl font-bold mb-4 glow">
+                        <i class="fas fa-rocket mr-2 text-yellow-300"></i> NEXT LAUNCH
+                    </h2>
+                    <div class="text-center">
+                        <div id="countdown" class="text-2xl font-mono mb-4">
+                            <span id="days">00</span>:<span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span>
+                        </div>
+                        <p class="text-sm">Until my next space mission!</p>
+                    </div>
+                </div>
+                
+                <!-- Visitor Map -->
+                <div class="border-2 border-cyan-500 p-4 bg-black bg-opacity-70">
+                    <h2 class="text-xl font-bold mb-4 glow">
+                        <i class="fas fa-globe-americas mr-2 text-yellow-300"></i> VISITOR MAP
+                    </h2>
+                    <div class="text-center">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='80' viewBox='0 0 150 80'><path d='M75,10 L90,30 L80,50 L60,60 L40,50 L30,30 L50,20 Z' fill='%23003366' stroke='%2300ffff'/><circle cx='40' cy='40' r='3' fill='%23ff00ff'/><circle cx='80' cy='30' r='3' fill='%23ff00ff'/><circle cx='60' cy='50' r='3' fill='%23ff00ff'/></svg>" alt="Visitor Map" class="mx-auto pixel">
+                        <p class="text-xs mt-2">You are visitor from sector <span id="visitor-sector">7G</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Webring -->
+        <div class="border-2 border-cyan-500 p-4 mt-6 bg-black bg-opacity-70 text-center">
+            <h2 class="text-xl font-bold mb-4 glow">
+                <i class="fas fa-ring mr-2 text-yellow-300"></i> SPACE EXPLORERS WEBRING
+            </h2>
+            <div class="flex justify-center space-x-4">
+                <a href="#" class="retro-btn text-sm">
+                    <i class="fas fa-arrow-left mr-1"></i> PREV
+                </a>
+                <a href="#" class="retro-btn text-sm">
+                    RANDOM
+                </a>
+                <a href="#" class="retro-btn text-sm">
+                    NEXT <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+            <p class="text-xs mt-2">Member #42 of the Space Explorers Webring</p>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="text-center py-6 mt-8 text-xs">
+        <div class="mb-2">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='20' viewBox='0 0 400 20'><text x='200' y='15' font-family='Courier New' font-size='12' fill='%2300ffff' text-anchor='middle'>✧･ﾟ: *✧･ﾟ:* *:･ﾟ✧*:･ﾟ✧</text></svg>" alt="Divider" class="mx-auto">
+        </div>
+        <p class="mb-2">© 2003 Cosmic Explorer. All rights reserved.</p>
+        <p class="mb-2">Best viewed with Netscape Navigator 3.0 or Internet Explorer 4.0</p>
+        <div class="mt-4">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='88' height='31' viewBox='0 0 88 31'><text x='44' y='20' font-family='Arial' font-size='20' fill='white' text-anchor='middle'>Netscape</text><text x='44' y='28' font-family='Arial' font-size='8' fill='white' text-anchor='middle'>NOW!</text></svg>" alt="Netscape Now" class="inline-block mx-2">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='28' viewBox='0 0 80 28'><rect x='2' y='2' width='76' height='24' fill='none' stroke='white' stroke-width='2'/><text x='40' y='18' font-family='Arial' font-size='12' fill='white' text-anchor='middle'>HTML 3.2</text></svg>" alt="HTML 3.2" class="inline-block mx-2">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='28' viewBox='0 0 80 28'><rect x='2' y='2' width='76' height='24' fill='none' stroke='white' stroke-width='2'/><text x='40' y='18' font-family='Arial' font-size='12' fill='white' text-anchor='middle'>JAVASCRIPT</text></svg>" alt="JavaScript" class="inline-block mx-2">
+        </div>
+    </footer>
+    
+    <!-- MIDI Player (hidden) -->
+    <audio id="midi-player" loop>
+        <!-- In a real 90s site, this would be a MIDI file -->
+        <source src="" type="audio/midi">
+    </audio>
+    
+    <script>
+        // Create twinkling stars
+        function createStars() {
+            const container = document.getElementById('stars-container');
+            const starCount = 100;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Random properties
+                const size = Math.random() * 3;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const duration = Math.random() * 3 + 1;
+                const delay = Math.random() * 5;
+                
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${left}%`;
+                star.style.top = `${top}%`;
+                star.style.animationDuration = `${duration}s`;
+                star.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(star);
+            }
+        }
+        
+        // Create Matrix rain effect
+        function createMatrixRain() {
+            const container = document.getElementById('matrix-container');
+            const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+            const columnCount = Math.floor(window.innerWidth / 20);
+            
+            for (let i = 0; i < columnCount; i++) {
+                const column = document.createElement('div');
+                column.style.left = `${(i * 20) + 10}px`;
+                column.style.animationDuration = `${Math.random() * 5 + 5}s`;
+                column.style.animationDelay = `${Math.random() * 2}s`;
+                
+                // Create characters in this column
+                const charCount = Math.floor(Math.random() * 20) + 10;
+                for (let j = 0; j < charCount; j++) {
+                    const char = document.createElement('div');
+                    char.classList.add('matrix-char');
+                    char.textContent = chars.charAt(Math.floor(Math.random() * chars.length));
+                    char.style.top = `${j * 20}px`;
+                    char.style.animationDuration = `${Math.random() * 5 + 5}s`;
+                    char.style.animationDelay = `${Math.random() * 2}s`;
+                    column.appendChild(char);
+                }
+                
+                container.appendChild(column);
+            }
+        }
+        
+        // Countdown timer
+        function updateCountdown() {
+            const now = new Date();
+            const nextLaunch = new Date();
+            nextLaunch.setDate(now.getDate() + 7); // Next week
+            nextLaunch.setHours(12, 0, 0, 0);
+            
+            const diff = nextLaunch - now;
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+        
+        // Random visitor sector
+        function setVisitorSector() {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const sector = `${Math.floor(Math.random() * 9) + 1}${letters.charAt(Math.floor(Math.random() * letters.length))}`;
+            document.getElementById('visitor-sector').textContent = sector;
+        }
+        
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            setVisitorSector();
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+            
+            // Matrix mode toggle
+            const matrixBtn = document.getElementById('matrix-btn');
+            const matrixContainer = document.getElementById('matrix-container');
+            let matrixActive = false;
+            
+            matrixBtn.addEventListener('click', () => {
+                matrixActive = !matrixActive;
+                
+                if (matrixActive) {
+                    matrixContainer.classList.remove('hidden');
+                    createMatrixRain();
+                    matrixBtn.classList.add('bg-green-900', 'text-green-300');
+                    document.body.style.backgroundColor = 'black';
+                } else {
+                    matrixContainer.classList.add('hidden');
+                    matrixBtn.classList.remove('bg-green-900', 'text-green-300');
+                    document.body.style.backgroundColor = '#000033';
+                }
+            });
+            
+            // MIDI player toggle
+            const musicBtn = document.getElementById('music-btn');
+            const midiPlayer = document.getElementById('midi-player');
+            let musicPlaying = false;
+            
+            musicBtn.addEventListener('click', () => {
+                musicPlaying = !musicPlaying;
+                
+                if (musicPlaying) {
+                    // In a real 90s site, this would play a MIDI file
+                    // midiPlayer.play();
+                    musicBtn.classList.add('bg-purple-900', 'text-purple-300');
+                    musicBtn.innerHTML = '<i class="fas fa-stop mr-2"></i> STOP MIDI';
+                } else {
+                    // midiPlayer.pause();
+                    musicBtn.classList.remove('bg-purple-900', 'text-purple-300');
+                    musicBtn.innerHTML = '<i class="fas fa-music mr-2"></i> PLAY MIDI';
+                }
+            });
+            
+            // Random visitor counter animation
+            let counter = 1;
+            const counterElement = document.getElementById('visitor-counter');
+            setInterval(() => {
+                counter++;
+                counterElement.textContent = counter.toString().padStart(7, '0');
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
